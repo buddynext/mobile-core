@@ -97,6 +97,9 @@ export type { ButtonTreatment, ButtonVariant } from './ui/buttonStyle';
 export { selectAsyncState } from './ui/asyncState';
 export type { AsyncInputs, AsyncState } from './ui/asyncState';
 
+// ── Formatting (pure) ──────────────────────────────────────────────────────────────
+export { parseTimestamp, relativeTime } from './format/relativeTime';
+
 // ── Gate ─────────────────────────────────────────────────────────────────────────
 //
 // The host calls both gates: the app gate once at boot/resume, the module gate per
