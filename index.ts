@@ -105,6 +105,10 @@ export { meetsMinimum } from './gate/semver';
 // cold start and resume so a licence expiry is felt, not remembered.
 export { bootstrapAppGate, fetchAppConfig } from './gate/bootstrap';
 export type { FetchAppConfigOptions } from './gate/bootstrap';
+// The resume predicate — which AppState edge re-runs the gate. Pure; the app's
+// useAppResume hook feeds it the last significant state.
+export { isResumeTransition } from './gate/resume';
+export type { AppStateValue } from './gate/resume';
 
 // ── API ──────────────────────────────────────────────────────────────────────────
 //
