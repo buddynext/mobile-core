@@ -87,6 +87,16 @@ export {
   shouldPersistQuery,
 } from './cache/persist';
 
+// ── UI decisions (pure) ──────────────────────────────────────────────────────────
+//
+// The logic behind the UI kit. The COMPONENTS live in ./ui and are imported as
+// `@wbcom/mobile-core/ui` (react-native, kept off the node barrel); these are the tested
+// decisions they render — the F2 button treatment and the six-state async selection.
+export { resolveButtonTreatment } from './ui/buttonStyle';
+export type { ButtonTreatment, ButtonVariant } from './ui/buttonStyle';
+export { selectAsyncState } from './ui/asyncState';
+export type { AsyncInputs, AsyncState } from './ui/asyncState';
+
 // ── Gate ─────────────────────────────────────────────────────────────────────────
 //
 // The host calls both gates: the app gate once at boot/resume, the module gate per
