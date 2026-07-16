@@ -70,3 +70,26 @@ export {
   tag,
 } from './cache/entities';
 export type { EntityRef, EntityType, KeyScope, Tagged } from './cache/entities';
+
+// ── Gate ─────────────────────────────────────────────────────────────────────────
+//
+// The host calls both gates: the app gate once at boot/resume, the module gate per
+// module before mounting. Modules do not gate themselves — being unmounted is decided
+// for them. `meetsMinimum` is exported because it is the shared fail-open version rule
+// and a module's own compat check should use it rather than reinvent the direction.
+export { evaluateAppGate } from './gate/appGate';
+export type {
+  AppConfig,
+  AppConfigFetch,
+  AppGateParams,
+  AppGateReason,
+  AppGateStatus,
+} from './gate/appGate';
+export { evaluateModuleGate } from './gate/moduleGate';
+export type {
+  ModuleGateContext,
+  ModuleGateInput,
+  ModuleGateStatus,
+  ModuleTier,
+} from './gate/moduleGate';
+export { meetsMinimum } from './gate/semver';
