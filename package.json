@@ -1,0 +1,8 @@
+{
+  "name": "@wbcom/mobile-core",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The shell: auth, gate, clients, theme, contribution registry. API UNSTABLE until BuddyNext ships (see docs/ARCHITECTURE.md TG8).",
+  "main": "index.ts",
+  "types": "index.ts"
+}
