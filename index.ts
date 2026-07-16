@@ -93,6 +93,10 @@ export type {
   ModuleTier,
 } from './gate/moduleGate';
 export { meetsMinimum } from './gate/semver';
+// The boot handshake. Plain axios, outside React Query, never persisted — re-run every
+// cold start and resume so a licence expiry is felt, not remembered.
+export { bootstrapAppGate, fetchAppConfig } from './gate/bootstrap';
+export type { FetchAppConfigOptions } from './gate/bootstrap';
 
 // ── API ──────────────────────────────────────────────────────────────────────────
 //
