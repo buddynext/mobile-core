@@ -7,6 +7,11 @@
 
 export { buildTheme } from './semantic';
 export type { Colors, Diagnostics, Neutrals, Scheme, StatusFamily, Theme } from './semantic';
+// Pure scheme resolution — safe for the node test barrel. The React ThemeProvider that
+// consumes it lives in ./ThemeProvider.tsx and is imported directly by the app, never
+// through this barrel, so react-native never enters the node jest environment.
+export { hasChosenScheme, resolveScheme } from './scheme';
+export type { ColorSchemePref, ResolvedScheme, ServerSchemeDefault } from './scheme';
 export { AA_TEXT, AA_UI, DEFAULT_ACCENT } from './derive';
 export type { AccentTokens, Correction } from './derive';
 export { contrastRatio, parseHex, relativeLuminance, toHex } from './primitives';

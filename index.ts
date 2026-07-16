@@ -24,18 +24,26 @@
 // already proven readable. Exporting `adjustLightness` would invite a module to derive
 // its own accent, which is exactly the F2/F3/F4 bug class the theme exists to prevent.
 export { buildTheme, contrastPairs, AA_TEXT, AA_UI, DEFAULT_ACCENT } from './theme';
+export { hasChosenScheme, resolveScheme } from './theme';
 export type {
   AccentTokens,
   Colors,
+  ColorSchemePref,
   ContrastPair,
   Correction,
   Diagnostics,
   Neutrals,
+  ResolvedScheme,
   RGB,
   Scheme,
+  ServerSchemeDefault,
   StatusFamily,
   Theme,
 } from './theme';
+// The React ThemeProvider/useTheme are NOT exported here — they import react-native and
+// would pull it into the node jest barrel. The app imports them from
+// `@wbcom/mobile-core/theme/ThemeProvider` directly (it is the shell, not a module, so
+// the no-deep-import rule that binds modules does not apply to it).
 
 // ── Registry ─────────────────────────────────────────────────────────────────────
 //
