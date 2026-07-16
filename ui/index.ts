@@ -24,5 +24,13 @@ export {
 export type { EmptyStateProps } from './states';
 export { ConfirmSheetProvider, useConfirm } from './ConfirmSheet';
 export type { ConfirmOptions } from './ConfirmSheet';
+export { Avatar } from './Avatar';
+export type { AvatarProps } from './Avatar';
+export { ScreenHeader } from './ScreenHeader';
+export type { ScreenHeaderProps } from './ScreenHeader';
+export { ListRow } from './ListRow';
+export type { ListRowProps } from './ListRow';
+export { Badge, Chip } from './Badge';
+export type { ChipProps } from './Badge';
 
 export type { ButtonVariant } from './buttonStyle';
