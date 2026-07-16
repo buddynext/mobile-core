@@ -78,6 +78,14 @@ export {
   tag,
 } from './cache/entities';
 export type { EntityRef, EntityType, KeyScope, Tagged } from './cache/entities';
+// Persistence policy — key by site, bust on version, exclude viewer-state, cap infinite
+// lists to page 1. The app composes these into PersistQueryClientProvider.
+export {
+  capToFirstPage,
+  persistBuster,
+  persistKey,
+  shouldPersistQuery,
+} from './cache/persist';
 
 // ── Gate ─────────────────────────────────────────────────────────────────────────
 //
