@@ -49,3 +49,24 @@ export type {
   ResolveInput,
   ServerNavItem,
 } from './registry/resolve';
+
+// ── Cache ────────────────────────────────────────────────────────────────────────
+//
+// Modules DO use these: a module owns its own mutations, and `registerEntityScope` is
+// how it tells core where its entities live without core having to know its key layout.
+//
+// `patchInData` is exported for tests and for a module with a cache shape core has not
+// met; `resetEntityScopes` is a test seam. Neither is a normal call site.
+export {
+  patchEntityEverywhere,
+  patchInData,
+} from './cache/optimisticCache';
+export type { Rollback } from './cache/optimisticCache';
+export {
+  isRef,
+  registerEntityScope,
+  resetEntityScopes,
+  scopeFor,
+  tag,
+} from './cache/entities';
+export type { EntityRef, EntityType, KeyScope, Tagged } from './cache/entities';
