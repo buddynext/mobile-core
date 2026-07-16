@@ -4,5 +4,23 @@
   "version": "0.0.0",
   "description": "The shell: auth, gate, clients, theme, contribution registry. API UNSTABLE until BuddyNext ships (see docs/ARCHITECTURE.md TG8).",
   "main": "index.ts",
-  "types": "index.ts"
+  "types": "index.ts",
+  "dependencies": {
+    "axios": "^1.18.1",
+    "zustand": "^5.0.14"
+  },
+  "peerDependencies": {
+    "expo-crypto": "*",
+    "expo-secure-store": "*",
+    "expo-web-browser": "*",
+    "react": "*",
+    "react-native": "*"
+  },
+  "peerDependenciesMeta": {
+    "expo-crypto": { "optional": true },
+    "expo-secure-store": { "optional": true },
+    "expo-web-browser": { "optional": true },
+    "react": { "optional": true },
+    "react-native": { "optional": true }
+  }
 }

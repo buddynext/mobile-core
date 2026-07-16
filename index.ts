@@ -126,3 +126,29 @@ export {
   queryCacheKey,
   siteKey,
 } from './api/siteKey';
+
+// ── Auth (pure) ──────────────────────────────────────────────────────────────────
+//
+// The handshake LOGIC is node-safe and lives here. The RUNTIME (appSession.ts — it opens
+// WebBrowser and touches SecureStore/Crypto) is imported by the app directly from
+// `@wbcom/mobile-core/auth/appSession`, never through this barrel, so the native modules
+// never enter the node test environment.
+export {
+  basicAuthHeader,
+  buildAuthorizeUrl,
+  parseAuthRedirect,
+} from './auth/appPassword';
+export type {
+  AppCredential,
+  AuthorizeParams,
+  RedirectFailure,
+  RedirectResult,
+} from './auth/appPassword';
+
+// ── Session ──────────────────────────────────────────────────────────────────────
+//
+// The auth slice of session state (zustand/vanilla — no React). getAuthHeader is the
+// synchronous source the client registry reads at request time; the app subscribes to
+// `sessionStore` with zustand's useStore hook for the sign-in/out UI.
+export { getAuthHeader, isSignedIn, sessionStore } from './session/sessionStore';
+export type { SessionState } from './session/sessionStore';
