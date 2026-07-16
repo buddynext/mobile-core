@@ -235,6 +235,47 @@ export function readableForeground(bg: RGB): RGB {
 }
 
 /**
+ * Blend `a` into `b`. `weight` is how much of `a` survives: 1 is all `a`, 0 is all `b`.
+ *
+ * Mixed in OKLab, not in gamma-encoded sRGB.
+ *
+ * The web plugin writes `color-mix(in srgb, var(--bn-accent) 12%, transparent)`, and CSS
+ * interpolates that in gamma-encoded sRGB. Averaging two hues that way can produce a
+ * colour dimmer than BOTH inputs: red (luminance 0.213) and blue (0.072) average to
+ * #800080 at 0.061 — the muddy midpoint every naive gradient shows. OKLab lands the same
+ * blend at #8C53A2, luminance 0.144, between the two where it belongs, because it
+ * interpolates perceptually rather than by byte value.
+ *
+ * The cost is honest and worth naming: an app tint and the same web tint will differ
+ * very slightly. At the 8-12% weights we actually use, that difference is well under a
+ * quantisation step, and internal consistency wins — everything else in this theme moves
+ * in OK-space, and one token drifting into a different colour model is how a palette
+ * stops being derivable.
+ */
+export function mix(a: RGB, b: RGB, weight: number): RGB {
+  const t = Math.min(1, Math.max(0, weight));
+
+  const fromLinear = (rgb: RGB) =>
+    linearRgbToOklab({
+      r: srgbToLinearChannel(rgb.r),
+      g: srgbToLinearChannel(rgb.g),
+      b: srgbToLinearChannel(rgb.b),
+    });
+
+  const oa = fromLinear(a);
+  const ob = fromLinear(b);
+  const lerp = (x: number, y: number) => y + (x - y) * t;
+
+  const lin = oklabToLinearRgb(lerp(oa.L, ob.L), lerp(oa.a, ob.a), lerp(oa.b, ob.b));
+
+  return {
+    r: clamp255(linearToSrgbChannel(lin.r)),
+    g: clamp255(linearToSrgbChannel(lin.g)),
+    b: clamp255(linearToSrgbChannel(lin.b)),
+  };
+}
+
+/**
  * The nearest lightness at which `color` clears `target` against EVERY background in
  * `bgs`, hue and chroma preserved.
  *
