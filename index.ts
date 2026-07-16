@@ -93,3 +93,24 @@ export type {
   ModuleTier,
 } from './gate/moduleGate';
 export { meetsMinimum } from './gate/semver';
+
+// ── API ──────────────────────────────────────────────────────────────────────────
+//
+// A module gets its clients through the registry the host builds — it never news up its
+// own axios, so there is one credential source and one place a site switch tears down.
+// `keysFor(moduleId)` is how a module namespaces every query key without restating its
+// id. The site-key helpers are exported for the auth + persister layers (0.10, 0.18).
+export { createClientRegistry } from './api/clients';
+export type {
+  AuthHeaderSource,
+  ClientRegistry,
+  ClientRegistryOptions,
+} from './api/clients';
+export { keysFor, moduleKey } from './api/queryKeys';
+export type { KeySegment } from './api/queryKeys';
+export {
+  credentialKey,
+  normalizeSiteUrl,
+  queryCacheKey,
+  siteKey,
+} from './api/siteKey';
