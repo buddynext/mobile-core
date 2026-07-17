@@ -32,5 +32,7 @@ export { ListRow } from './ListRow';
 export type { ListRowProps } from './ListRow';
 export { Badge, Chip } from './Badge';
 export type { ChipProps } from './Badge';
+export { FormField } from './FormField';
+export type { FormFieldProps } from './FormField';
 
 export type { ButtonVariant } from './buttonStyle';
