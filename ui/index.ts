@@ -34,5 +34,7 @@ export { Badge, Chip } from './Badge';
 export type { ChipProps } from './Badge';
 export { FormField } from './FormField';
 export type { FormFieldProps } from './FormField';
+export { OptionCard } from './OptionCard';
+export type { OptionCardProps } from './OptionCard';
 
 export type { ButtonVariant } from './buttonStyle';
