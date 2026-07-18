@@ -22,6 +22,12 @@ export interface ButtonProps extends Omit<PressableProps, 'style' | 'children'> 
   busy?: boolean;
   /** Full-width block button. */
   block?: boolean;
+  /**
+   * `md` (default) — the 48pt primary CTA. `sm` — a compact pill for inline list actions
+   * (Follow, Join, Approve) where a full-height button reads as heavy. `sm` keeps a 44pt
+   * effective touch target via hitSlop.
+   */
+  size?: 'md' | 'sm';
 }
 
 export function Button({
@@ -29,20 +35,24 @@ export function Button({
   variant = 'primary',
   busy = false,
   block = false,
+  size = 'md',
   disabled,
   ...pressable
 }: ButtonProps) {
   const colors = useColors();
   const treatment = resolveButtonTreatment(variant, colors);
   const inert = disabled || busy;
+  const small = size === 'sm';
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ disabled: !!inert, busy }}
       disabled={inert}
+      hitSlop={small ? 6 : undefined}
       style={({ pressed }) => [
         styles.base,
+        small ? styles.small : styles.medium,
         {
           backgroundColor: treatment.backgroundColor,
           borderColor: treatment.borderColor,
@@ -55,9 +65,9 @@ export function Button({
       {...pressable}
     >
       {busy ? (
-        <ActivityIndicator color={treatment.color} />
+        <ActivityIndicator color={treatment.color} size={small ? 'small' : undefined} />
       ) : (
-        <Text style={[styles.label, { color: treatment.color }]} numberOfLines={1}>
+        <Text style={[small ? styles.labelSmall : styles.label, { color: treatment.color }]} numberOfLines={1}>
           {label}
         </Text>
       )}
@@ -66,16 +76,20 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
-  base: {
+  base: { alignItems: 'center', justifyContent: 'center', flexDirection: 'row' },
+  medium: {
     minHeight: 48, // HIG 44 / Android 48 -> take the stricter (UX.md §11).
     paddingHorizontal: 20,
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+  },
+  small: {
+    minHeight: 34,
+    paddingHorizontal: 16,
+    borderRadius: 17, // pill
   },
   block: { alignSelf: 'stretch' },
   inert: { opacity: 0.5 },
   pressed: { opacity: 0.85 },
   label: { fontSize: 16, fontWeight: '600' },
+  labelSmall: { fontSize: 14, fontWeight: '600' },
 });
