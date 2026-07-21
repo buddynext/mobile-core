@@ -8,6 +8,10 @@
  * The scale is the social-feed convention (X/Instagram): seconds -> "now", minutes -> "5m",
  * hours -> "3h", days -> "4d", then a calendar date. No "ago" suffix — the column context
  * already says these are timestamps, and the shorter form scans faster in a dense list.
+ *
+ * The relative buckets are timezone-independent (elapsed time is absolute). The calendar-date
+ * fallback is rendered in the SITE timezone (the owner's WP setting), not the device's — we're
+ * self-hosted, not SaaS — via an optional `gmtOffsetMinutes` (0 = UTC, the default).
  */
 
 const MINUTE = 60_000;
@@ -49,7 +53,7 @@ export function parseTimestamp(input: string | number): number | null {
  * A future timestamp (clock skew between phone and server) clamps to "now" rather than
  * showing a negative — a "-3m" in the feed reads as a bug.
  */
-export function relativeTime(when: string | number, nowMs: number): string {
+export function relativeTime(when: string | number, nowMs: number, gmtOffsetMinutes = 0): string {
   const then = parseTimestamp(when);
   if (then === null) {
     return '';
@@ -71,9 +75,13 @@ export function relativeTime(when: string | number, nowMs: number): string {
     return `${Math.floor(delta / DAY)}d`;
   }
 
-  // Older than a week -> a calendar date. Include the year only if it differs from now.
-  const date = new Date(then);
-  const now = new Date(nowMs);
+  // Older than a week -> a calendar date, in the SITE timezone. Shift the instant by the
+  // site's UTC offset, then read UTC parts, so the wall-clock date is the community's — not
+  // the device's, and not raw UTC (offset 0 leaves it at UTC, the default). Include the year
+  // only if it differs from now (compared in the same shifted frame).
+  const shift = gmtOffsetMinutes * 60_000;
+  const date = new Date(then + shift);
+  const now = new Date(nowMs + shift);
   const day = date.getUTCDate();
   const month = MONTHS[date.getUTCMonth()];
   return date.getUTCFullYear() === now.getUTCFullYear()

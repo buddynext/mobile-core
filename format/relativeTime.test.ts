@@ -40,6 +40,20 @@ describe('the social-feed scale', () => {
   it('includes the year when it differs from now', () => {
     expect(relativeTime(Date.UTC(2025, 11, 25, 9, 0, 0), NOW)).toBe('Dec 25, 2025');
   });
+
+  it('renders the calendar date in the site timezone via the offset', () => {
+    // 01:06 UTC on Jul 8 is still Jul 7 at a UTC-5 (-300 min) site offset.
+    const earlyMorningUtc = Date.UTC(2026, 6, 8, 1, 6, 0);
+    expect(relativeTime(earlyMorningUtc, NOW)).toBe('Jul 8'); // default: UTC
+    expect(relativeTime(earlyMorningUtc, NOW, -300)).toBe('Jul 7'); // site tz UTC-5
+
+    // 22:00 UTC on Jul 8 crosses forward to Jul 9 at a +5h site offset.
+    const lateEveningUtc = Date.UTC(2026, 6, 8, 22, 0, 0);
+    expect(relativeTime(lateEveningUtc, NOW, 5 * 60)).toBe('Jul 9');
+
+    // The relative buckets are timezone-independent — the offset must not touch them.
+    expect(relativeTime(ago(3 * HOUR), NOW, -300)).toBe('3h');
+  });
 });
 
 describe('robustness', () => {
