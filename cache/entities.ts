@@ -29,7 +29,8 @@ export type EntityType =
   | 'forum_reply'
   | 'media'
   | 'job'
-  | 'course';
+  | 'course'
+  | 'listing';
 
 /** A specific entity: type AND id. Neither half identifies it alone. */
 export interface EntityRef {
