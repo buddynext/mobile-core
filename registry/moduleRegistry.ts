@@ -86,3 +86,42 @@ export function discoverTiles(
     .filter((module) => module.tile && evaluateModuleGate(module, context).mounted)
     .map((module) => ({ id: module.id, ...module.tile! }));
 }
+
+/** One row of the Settings → Integrations surface. */
+export interface IntegrationStatus {
+  id: string;
+  label: string;
+  /** 'on' = mounted (informational row); 'errored' = enabled but NOT mounted, with why. */
+  status: 'on' | 'errored';
+  /** Installed partner version, when the site reported one. */
+  version?: string;
+  /** The gate's explanation for an errored module ("partner-too-old" detail). */
+  detail?: string;
+}
+
+/**
+ * Settings → Integrations (UX.md "the honesty surface"): integration-tier modules that
+ * are ON (name + version, informational) or ERRORED (enabled but unmounted — the one
+ * non-silent gate verdict, with its explanation). An owner-off module is NEVER listed:
+ * flagged-off is silent everywhere, including here. Mandatory modules aren't
+ * integrations and don't appear.
+ */
+export function integrationStatuses(
+  modules: readonly ModuleDescriptor[],
+  context: ModuleGateContext
+): IntegrationStatus[] {
+  const rows: IntegrationStatus[] = [];
+  for (const module of modules) {
+    if (module.tier !== 'integration') {
+      continue;
+    }
+    const label = module.spine?.label ?? module.tile?.label ?? module.id;
+    const verdict = evaluateModuleGate(module, context);
+    if (verdict.mounted) {
+      rows.push({ id: module.id, label, status: 'on', version: context.partnerVersions?.[module.id] });
+    } else if (!verdict.silent) {
+      rows.push({ id: module.id, label, status: 'errored', detail: verdict.detail });
+    }
+  }
+  return rows;
+}

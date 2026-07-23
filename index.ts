@@ -182,9 +182,10 @@ export type { SessionState } from './session/sessionStore';
 // feeds relativeTime so calendar dates render in the community's timezone, not the device's.
 // Module registry (§C2): one descriptor per module; `spineNavItems`/`discoverTiles` are the
 // gate-filtered readers both nav surfaces use. The host app owns the concrete table.
-export { discoverTiles, spineNavItems } from './registry/moduleRegistry';
+export { discoverTiles, integrationStatuses, spineNavItems } from './registry/moduleRegistry';
 export type {
   DiscoverTile,
+  IntegrationStatus,
   ModuleDescriptor,
   SpineNavItem,
   SpineSpec,
