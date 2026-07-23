@@ -48,6 +48,26 @@ describe('setConfig / reset', () => {
     });
     expect(configStore.getState().features).toEqual({});
     expect(configStore.getState().integrations).toEqual({});
+    expect(configStore.getState().branding).toBeNull();
+    expect(configStore.getState().legal).toBeNull();
+  });
+
+  it('captures branding + legal (the settings/appearance sources) and reset clears them', () => {
+    configStore.getState().setConfig({
+      branding: {
+        app_name: 'BuddyNext',
+        accent_color: '',
+        logo_url: '',
+        login_bg_url: '',
+        color_scheme_default: 'dark',
+      },
+      legal: { privacy_url: 'https://x/p', terms_url: '', eula_url: '', guidelines_url: '', abuse_contact: '' },
+    });
+    expect(configStore.getState().branding?.color_scheme_default).toBe('dark');
+    expect(configStore.getState().legal?.privacy_url).toBe('https://x/p');
+    configStore.getState().reset();
+    expect(configStore.getState().branding).toBeNull();
+    expect(configStore.getState().legal).toBeNull();
   });
 });
 

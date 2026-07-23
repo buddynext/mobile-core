@@ -46,12 +46,33 @@ export interface RealtimeConfig {
   auth_url: string;
 }
 
+/** The `/app/config` `branding` block — the owner's look. Empty strings mean "inherit". */
+export interface AppBranding {
+  app_name: string;
+  accent_color: string;
+  logo_url: string;
+  login_bg_url: string;
+  /** Scheme SEED for members who never chose (scheme.ts: seeds, never overrides). */
+  color_scheme_default: 'auto' | 'light' | 'dark';
+}
+
+/** The `/app/config` `legal` block. Empty string = the site did not set that URL. */
+export interface AppLegal {
+  privacy_url: string;
+  terms_url: string;
+  eula_url: string;
+  guidelines_url: string;
+  abuse_contact: string;
+}
+
 /** The subset of `/app/config` the shell captures for synchronous reads. */
 export interface CapturedConfig {
   time?: AppTime | null;
   features?: Record<string, boolean> | null;
   integrations?: IntegrationsMap | null;
   realtime?: RealtimeConfig | null;
+  branding?: AppBranding | null;
+  legal?: AppLegal | null;
 }
 
 export interface ConfigState {
@@ -63,13 +84,24 @@ export interface ConfigState {
   integrations: IntegrationsMap;
   /** app-config `realtime` websocket params, or null when absent/unresolved. */
   realtime: RealtimeConfig | null;
+  /** app-config `branding`, or null before the gate resolves (theme falls back to defaults). */
+  branding: AppBranding | null;
+  /** app-config `legal` URLs, or null when unresolved. Settings renders only set URLs. */
+  legal: AppLegal | null;
   /** Capture the resolved app-config (called once when the gate opens). */
   setConfig: (config: CapturedConfig | null) => void;
   /** Full reset (e.g. switching sites). */
   reset: () => void;
 }
 
-const EMPTY = { time: null, features: {}, integrations: {}, realtime: null } as const;
+const EMPTY = {
+  time: null,
+  features: {},
+  integrations: {},
+  realtime: null,
+  branding: null,
+  legal: null,
+} as const;
 
 export const configStore = createStore<ConfigState>((set) => ({
   ...EMPTY,
@@ -79,6 +111,8 @@ export const configStore = createStore<ConfigState>((set) => ({
       features: config?.features ?? {},
       integrations: config?.integrations ?? {},
       realtime: config?.realtime ?? null,
+      branding: config?.branding ?? null,
+      legal: config?.legal ?? null,
     }),
   reset: () => set({ ...EMPTY }),
 }));

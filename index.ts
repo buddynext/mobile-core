@@ -195,6 +195,8 @@ export type {
 // nav gate reads — a module descriptor's `flag`/`id` IS the integration key.
 export { configStore, moduleContext, siteGmtOffsetMinutes } from './config/configStore';
 export type {
+  AppBranding,
+  AppLegal,
   AppTime,
   CapturedConfig,
   ConfigState,
