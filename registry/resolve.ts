@@ -23,7 +23,8 @@
  */
 
 /**
- * One item of server intent, as `GET /shell-nav` returns it.
+ * One item of nav intent. Historically the `GET /shell-nav` shape; since nav step 1 the
+ * client spine (`spineNavItems`) produces the same shape, so resolution is source-agnostic.
  *
  * `icon` and `url` are deliberately absent: the icon is resolved through the icon
  * registry by the renderer, and `url` is the web fallback. Neither affects resolution,
