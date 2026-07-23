@@ -180,6 +180,17 @@ export type { SessionState } from './session/sessionStore';
 
 // App-config slice: the site's `/app/config`, captured when the gate opens. `siteGmtOffsetMinutes`
 // feeds relativeTime so calendar dates render in the community's timezone, not the device's.
+// Module registry (§C2): one descriptor per module; `spineNavItems`/`discoverTiles` are the
+// gate-filtered readers both nav surfaces use. The host app owns the concrete table.
+export { discoverTiles, spineNavItems } from './registry/moduleRegistry';
+export type {
+  DiscoverTile,
+  ModuleDescriptor,
+  SpineNavItem,
+  SpineSpec,
+  TileSpec,
+} from './registry/moduleRegistry';
+
 // `moduleContext` folds `integrations` into the flat `{features, partnerVersions}` shape the
 // nav gate reads — a module descriptor's `flag`/`id` IS the integration key.
 export { configStore, moduleContext, siteGmtOffsetMinutes } from './config/configStore';
