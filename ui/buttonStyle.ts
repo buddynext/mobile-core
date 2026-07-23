@@ -14,7 +14,7 @@
 
 import type { Colors } from '../theme';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 export interface ButtonTreatment {
   backgroundColor: string;
@@ -73,6 +73,18 @@ export function resolveButtonTreatment(
         color: colors.accentInk,
         borderColor: 'transparent',
         borderWidth: 0,
+      };
+
+    case 'danger':
+      // Outlined, never filled: `danger` is a dark red in light scheme but a LIGHT red
+      // in dark scheme, so no single fill/text pairing passes AA in both. Outline with
+      // danger ink reads as destructive in either — and a destructive CTA gains nothing
+      // from a fill except accidental tappability.
+      return {
+        backgroundColor: 'transparent',
+        color: colors.danger,
+        borderColor: colors.danger,
+        borderWidth: OUTLINE_WIDTH,
       };
   }
 }

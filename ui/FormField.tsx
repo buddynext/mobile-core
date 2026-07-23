@@ -29,6 +29,8 @@ export interface FormFieldProps {
   /** Character budget shown as a counter, and enforced on input. */
   maxLength?: number;
   editable?: boolean;
+  /** Password-style masked entry (implies no autocapitalize/autocorrect). */
+  secure?: boolean;
 }
 
 export function FormField({
@@ -44,6 +46,7 @@ export function FormField({
   autoCapitalize = 'sentences',
   maxLength,
   editable = true,
+  secure = false,
 }: FormFieldProps) {
   const colors = useColors();
   const [focused, setFocused] = useState(false);
@@ -72,9 +75,10 @@ export function FormField({
         placeholder={placeholder}
         placeholderTextColor={colors.ink3}
         multiline={multiline}
+        secureTextEntry={secure}
         keyboardType={keyboard}
         autoCapitalize={autoCapitalize}
-        autoCorrect={autoCapitalize !== 'none'}
+        autoCorrect={!secure && autoCapitalize !== 'none'}
         maxLength={maxLength}
         editable={editable}
         style={[

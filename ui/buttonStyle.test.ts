@@ -60,3 +60,15 @@ describe('ghost', () => {
     expect(t.color).not.toBe(paleAccent.accent);
   });
 });
+
+describe('danger', () => {
+  it('is an outline in danger ink — never a fill (no AA-safe fill exists in both schemes)', () => {
+    for (const colors of [okAccent, paleAccent]) {
+      const t = resolveButtonTreatment('danger', colors);
+      expect(t.backgroundColor).toBe('transparent');
+      expect(t.color).toBe(colors.danger);
+      expect(t.borderColor).toBe(colors.danger);
+      expect(t.borderWidth).toBeGreaterThan(0);
+    }
+  });
+});
