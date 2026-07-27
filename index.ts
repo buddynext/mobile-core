@@ -198,6 +198,7 @@ export { configStore, moduleContext, siteGmtOffsetMinutes } from './config/confi
 export type {
   AppBranding,
   AppLegal,
+  AppLocale,
   AppTime,
   CapturedConfig,
   ConfigState,

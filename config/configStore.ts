@@ -65,6 +65,19 @@ export interface AppLegal {
   abuse_contact: string;
 }
 
+/**
+ * The `/app/config` `locale` block — the site's language facts, used to seed the app's
+ * language resolution and the Settings language picker, and to cache-bust OTA strings.
+ */
+export interface AppLocale {
+  /** Site default locale as a short app code, e.g. "en" or "es". */
+  default: string;
+  /** Short codes the site actually ships translations for, e.g. ["en","es","fr"]. */
+  languages: string[];
+  /** Bumps whenever the site's translations change → the app refetches its OTA strings. */
+  strings_version: number;
+}
+
 /** The subset of `/app/config` the shell captures for synchronous reads. */
 export interface CapturedConfig {
   time?: AppTime | null;
@@ -73,6 +86,7 @@ export interface CapturedConfig {
   realtime?: RealtimeConfig | null;
   branding?: AppBranding | null;
   legal?: AppLegal | null;
+  locale?: AppLocale | null;
 }
 
 export interface ConfigState {
@@ -88,6 +102,8 @@ export interface ConfigState {
   branding: AppBranding | null;
   /** app-config `legal` URLs, or null when unresolved. Settings renders only set URLs. */
   legal: AppLegal | null;
+  /** app-config `locale` (default + shipped languages + strings version), or null when unresolved. */
+  locale: AppLocale | null;
   /** Capture the resolved app-config (called once when the gate opens). */
   setConfig: (config: CapturedConfig | null) => void;
   /** Full reset (e.g. switching sites). */
@@ -101,6 +117,7 @@ const EMPTY = {
   realtime: null,
   branding: null,
   legal: null,
+  locale: null,
 } as const;
 
 export const configStore = createStore<ConfigState>((set) => ({
@@ -113,6 +130,7 @@ export const configStore = createStore<ConfigState>((set) => ({
       realtime: config?.realtime ?? null,
       branding: config?.branding ?? null,
       legal: config?.legal ?? null,
+      locale: config?.locale ?? null,
     }),
   reset: () => set({ ...EMPTY }),
 }));
