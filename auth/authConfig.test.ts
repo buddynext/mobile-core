@@ -12,7 +12,7 @@
 
 import axios, { type AxiosAdapter } from 'axios';
 
-import { FALLBACK_AUTH_CONFIG, fetchAuthConfig } from './authConfig';
+import { FALLBACK_AUTH_CONFIG, fetchAuthConfig, sanitizeAuthBlock } from './authConfig';
 
 /** An axios instance whose adapter returns a fixed status/body, and counts calls. */
 function stubbed(status: number, data: unknown) {
@@ -116,5 +116,36 @@ describe('fetchAuthConfig', () => {
     await fetchAuthConfig('https://site.com', { client });
     await fetchAuthConfig('https://site.com', { client });
     expect(calls()).toBe(2);
+  });
+
+  it('fetches a SIBLING product config via configPath — one client, every product', async () => {
+    let requested = '';
+    const adapter: import('axios').AxiosAdapter = async (config) => {
+      requested = String(config.url);
+      return { data: FULL_BODY, status: 200, statusText: '', headers: {}, config };
+    };
+    const client = (await import('axios')).default.create({ adapter, validateStatus: () => true });
+
+    const config = await fetchAuthConfig('https://site.com', {
+      client,
+      configPath: '/wp-json/jetonomy/v1/app/config',
+    });
+
+    expect(requested).toBe('https://site.com/wp-json/jetonomy/v1/app/config');
+    expect(config.bridge).toBe(true);
+  });
+});
+
+describe('sanitizeAuthBlock (exported for discovery-integrated apps)', () => {
+  it('sanitizes a body the caller already holds — no second request needed', () => {
+    const config = sanitizeAuthBlock(FULL_BODY);
+    expect(config.bridge).toBe(true);
+    expect(config.providers).toHaveLength(2);
+  });
+
+  it('resolves the fallback for a body with no auth block (older plugin)', () => {
+    expect(sanitizeAuthBlock({ contract_version: 1 })).toEqual(FALLBACK_AUTH_CONFIG);
+    expect(sanitizeAuthBlock('not-an-object')).toEqual(FALLBACK_AUTH_CONFIG);
+    expect(sanitizeAuthBlock(null)).toEqual(FALLBACK_AUTH_CONFIG);
   });
 });

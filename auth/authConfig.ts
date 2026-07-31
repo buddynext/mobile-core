@@ -21,7 +21,12 @@ import axios, { type AxiosInstance } from 'axios';
 
 import { normalizeSiteUrl } from '../api/siteKey';
 
-/** The same public bootstrap route the app gate reads; auth is a block on it. */
+/**
+ * The same public bootstrap route the app gate reads; auth is a block on it.
+ * BuddyNext's by default — every Wbcom product publishes the SAME auth block
+ * shape on its own /app/config, so sibling apps pass their product's path via
+ * `configPath` and reuse this client unchanged.
+ */
 const AUTH_CONFIG_PATH = '/wp-json/buddynext/v1/app/config';
 
 /** Matches the gate's boot budget — a slow answer must not stall the sign-in screen. */
@@ -61,6 +66,12 @@ export interface FetchAuthConfigOptions {
   /** Injectable for tests; defaults to a fresh, uncached axios instance. */
   client?: AxiosInstance;
   timeoutMs?: number;
+  /**
+   * The product's own /app/config path (leading slash, wp-json included).
+   * Defaults to BuddyNext's; e.g. jetonomy-app passes
+   * `/wp-json/jetonomy/v1/app/config`.
+   */
+  configPath?: string;
 }
 
 /**
@@ -70,9 +81,9 @@ export interface FetchAuthConfigOptions {
  */
 export async function fetchAuthConfig(
   siteUrl: string,
-  { client, timeoutMs = AUTH_CONFIG_TIMEOUT_MS }: FetchAuthConfigOptions = {}
+  { client, timeoutMs = AUTH_CONFIG_TIMEOUT_MS, configPath = AUTH_CONFIG_PATH }: FetchAuthConfigOptions = {}
 ): Promise<AuthConfig> {
-  const url = `${normalizeSiteUrl(siteUrl)}${AUTH_CONFIG_PATH}`;
+  const url = `${normalizeSiteUrl(siteUrl)}${configPath}`;
 
   const http =
     client ??
@@ -87,20 +98,24 @@ export async function fetchAuthConfig(
     if (response.status < 200 || response.status >= 300) {
       return FALLBACK_AUTH_CONFIG;
     }
-    return sanitize(response.data);
+    return sanitizeAuthBlock(response.data);
   } catch {
     return FALLBACK_AUTH_CONFIG;
   }
 }
 
 /**
- * Coerce the server body into a safe AuthConfig.
+ * Coerce a /app/config response body into a safe AuthConfig.
+ *
+ * Exported for apps whose site-discovery step ALREADY fetched /app/config
+ * (jetonomy-app verifies the site and reads branding from the same response)
+ * — they sanitize the body they hold instead of paying a second request.
  *
  * Provider entries are kept only when both id and label are non-empty strings,
  * and the id is slug-shaped — the id becomes a URL parameter and the label goes
  * on a button, so neither may carry arbitrary junk from a mis-serialized body.
  */
-function sanitize(body: unknown): AuthConfig {
+export function sanitizeAuthBlock(body: unknown): AuthConfig {
   if (typeof body !== 'object' || body === null) {
     return FALLBACK_AUTH_CONFIG;
   }
