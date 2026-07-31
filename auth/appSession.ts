@@ -21,6 +21,7 @@ import {
   type AppCredential,
   type RedirectFailure,
 } from './appPassword';
+import { buildConnectUrl, parseBridgeRedirect } from './connect';
 
 /** The app's redirect scheme — must match `scheme` in app.json. */
 const REDIRECT_SCHEME = 'buddynextapp';
@@ -37,7 +38,7 @@ const APP_ID_KEY = 'bn.app_id';
 
 export type SignInResult =
   | { ok: true; siteUrl: string; credential: AppCredential }
-  | { ok: false; reason: RedirectFailure | 'cancelled' | 'dismissed' };
+  | { ok: false; reason: RedirectFailure | 'state-mismatch' | 'cancelled' | 'dismissed' };
 
 /**
  * Get (or mint once) this install's stable app id.
@@ -82,6 +83,62 @@ export async function signIn(siteUrl: string): Promise<SignInResult> {
   }
 
   const parsed = parseAuthRedirect(result.url, { scheme: REDIRECT_SCHEME, siteUrl });
+  if (!parsed.ok) {
+    return { ok: false, reason: parsed.reason };
+  }
+
+  await SecureStore.setItemAsync(
+    credentialKey(parsed.siteUrl),
+    JSON.stringify(parsed.credential)
+  );
+
+  return { ok: true, siteUrl: parsed.siteUrl, credential: parsed.credential };
+}
+
+/**
+ * Sign in through the plugin's connect-app bridge.
+ *
+ * Same contract and same storage tail as `signIn` — the difference is the
+ * SCREEN the member sees: the site's own branded login (with whatever social
+ * providers and two-factor the site runs) instead of wp-admin's
+ * authorize-application page. The caller passes the DISCOVERED bridge URL from
+ * `fetchAuthConfig().connectUrl`; when that is absent (`bridge: false`), call
+ * `signIn` instead — this function never guesses a path.
+ *
+ * A fresh state nonce is generated per attempt and verified on the way back
+ * (parseBridgeRedirect), so a redirect this attempt did not cause — however it
+ * reached the OS — is refused and its credential never stored.
+ */
+export async function connectViaBridge(
+  siteUrl: string,
+  connectUrl: string,
+  options?: { provider?: string }
+): Promise<SignInResult> {
+  const appId = await getAppId();
+  const state = Crypto.randomUUID();
+
+  const bridgeUrl = buildConnectUrl(connectUrl, {
+    appName: APP_NAME,
+    appId,
+    scheme: REDIRECT_SCHEME,
+    state,
+    provider: options?.provider,
+  });
+
+  const result = await WebBrowser.openAuthSessionAsync(bridgeUrl, REDIRECT_URI);
+
+  if (result.type === 'cancel') {
+    return { ok: false, reason: 'cancelled' };
+  }
+  if (result.type !== 'success') {
+    return { ok: false, reason: 'dismissed' };
+  }
+
+  const parsed = parseBridgeRedirect(result.url, {
+    scheme: REDIRECT_SCHEME,
+    siteUrl,
+    state,
+  });
   if (!parsed.ok) {
     return { ok: false, reason: parsed.reason };
   }

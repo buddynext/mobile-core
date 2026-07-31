@@ -169,6 +169,10 @@ export type {
   RedirectFailure,
   RedirectResult,
 } from './auth/appPassword';
+export { buildConnectUrl, parseBridgeRedirect } from './auth/connect';
+export type { BridgeRedirectResult, ConnectParams } from './auth/connect';
+export { FALLBACK_AUTH_CONFIG, fetchAuthConfig } from './auth/authConfig';
+export type { AuthConfig, AuthProvider, FetchAuthConfigOptions } from './auth/authConfig';
 
 // ── Session ──────────────────────────────────────────────────────────────────────
 //
