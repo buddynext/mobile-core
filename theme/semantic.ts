@@ -64,14 +64,19 @@ export interface Colors extends Neutrals, StatusFamily {
  * the whole difference between a token that works and one that fails where it is used.
  */
 const LIGHT: Neutrals = {
-  bg: '#FFFFFF',
+  // A soft grey CANVAS (bg) so white cards (surface) lift off it — the grouped-background
+  // pattern iOS/Twitter/Facebook use for depth. Previously bg === surface === white, so nothing
+  // separated and every screen read as one flat sheet. surfaceSunken is a true recess (darker
+  // than the canvas) for wells / inputs / pressed states. ink2/ink3 were nudged darker so muted
+  // text still clears WCAG AA 4.5:1 on the new, darker surfaces — enforced by contrast.test.ts.
+  bg: '#EEF0F4',
   surface: '#FFFFFF',
-  surfaceSunken: '#F5F6F8',
+  surfaceSunken: '#E9EBF0',
   ink: '#111827',
-  ink2: '#4B5563',
-  ink3: '#64707F',
-  line: '#E5E7EB',
-  lineStrong: '#848A96',
+  ink2: '#454E5C',
+  ink3: '#5A6472',
+  line: '#DDE1E8',
+  lineStrong: '#757B87',
 };
 
 const DARK: Neutrals = {
