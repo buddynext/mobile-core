@@ -21,6 +21,8 @@ export interface AvatarProps {
   uri?: string;
   name: string;
   size?: number;
+  /** Show a presence dot (online now) at the bottom-right. Omit/false = no dot. */
+  online?: boolean;
 }
 
 /** RN cannot render these; treat as no-image so the fallback shows. */
@@ -55,7 +57,7 @@ function hueFor(name: string): number {
   return h;
 }
 
-export function Avatar({ uri, name, size = 44 }: AvatarProps) {
+export function Avatar({ uri, name, size = 44, online = false }: AvatarProps) {
   const colors = useColors();
   const [failed, setFailed] = useState(false);
 
@@ -66,20 +68,16 @@ export function Avatar({ uri, name, size = 44 }: AvatarProps) {
 
   const dimension = { width: size, height: size, borderRadius: size / 2 };
   const showImage = isRenderable(uri) && !failed;
-
-  if (showImage) {
-    return (
-      <Image
-        source={{ uri }}
-        style={[dimension, { backgroundColor: colors.surfaceSunken }]}
-        onError={() => setFailed(true)}
-        accessibilityIgnoresInvertColors
-      />
-    );
-  }
-
   const hue = hueFor(name);
-  return (
+
+  const face = showImage ? (
+    <Image
+      source={{ uri }}
+      style={[dimension, { backgroundColor: colors.surfaceSunken }]}
+      onError={() => setFailed(true)}
+      accessibilityIgnoresInvertColors
+    />
+  ) : (
     <View
       style={[dimension, styles.fallback, { backgroundColor: `hsl(${hue}, 45%, 88%)` }]}
       accessible={false}
@@ -89,9 +87,38 @@ export function Avatar({ uri, name, size = 44 }: AvatarProps) {
       </Text>
     </View>
   );
+
+  // No dot → return the face directly (no wrapper), so existing layouts are untouched.
+  if (!online) {
+    return face;
+  }
+
+  // Presence dot: a `success`-green disc ringed in the surface colour so it reads on any avatar.
+  // Sized to the avatar and clamped so it stays legible on small ones (min 9px).
+  const dot = Math.max(9, Math.round(size * 0.28));
+  return (
+    <View style={{ width: size, height: size }}>
+      {face}
+      <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        style={[
+          styles.dot,
+          {
+            width: dot,
+            height: dot,
+            borderRadius: dot / 2,
+            backgroundColor: colors.success,
+            borderColor: colors.surface,
+          },
+        ]}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   fallback: { alignItems: 'center', justifyContent: 'center' },
   text: { fontWeight: '700' },
+  dot: { position: 'absolute', right: 0, bottom: 0, borderWidth: 2 },
 });
