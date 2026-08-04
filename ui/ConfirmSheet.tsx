@@ -76,7 +76,7 @@ export function ConfirmSheetProvider({ children }: { children: ReactNode }) {
               />
               <Button
                 label={pending?.confirmLabel ?? 'Confirm'}
-                variant={pending?.destructive ? 'secondary' : 'primary'}
+                variant={pending?.destructive ? 'danger' : 'primary'}
                 onPress={() => close(true)}
               />
             </View>
