@@ -11,6 +11,7 @@
  */
 
 import { Button } from './Button';
+import { useUiStrings } from './uiStrings';
 import { useColors } from '../theme/ThemeProvider';
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -35,6 +36,7 @@ interface PendingConfirm extends ConfirmOptions {
 /** Mount once near the root. Provides `useConfirm()` to everything below. */
 export function ConfirmSheetProvider({ children }: { children: ReactNode }) {
   const colors = useColors();
+  const strings = useUiStrings();
   const [pending, setPending] = useState<PendingConfirm | null>(null);
   const pendingRef = useRef<PendingConfirm | null>(null);
   pendingRef.current = pending;
@@ -70,12 +72,12 @@ export function ConfirmSheetProvider({ children }: { children: ReactNode }) {
             <Text style={[styles.message, { color: colors.ink3 }]}>{pending?.message}</Text>
             <View style={styles.actions}>
               <Button
-                label={pending?.cancelLabel ?? 'Cancel'}
+                label={pending?.cancelLabel ?? strings.cancel}
                 variant="secondary"
                 onPress={() => close(false)}
               />
               <Button
-                label={pending?.confirmLabel ?? 'Confirm'}
+                label={pending?.confirmLabel ?? strings.confirm}
                 variant={pending?.destructive ? 'danger' : 'primary'}
                 onPress={() => close(true)}
               />

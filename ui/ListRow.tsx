@@ -34,6 +34,8 @@ export function ListRow({
 }: ListRowProps) {
   const colors = useColors();
 
+  const composedLabel = accessibilityLabel ?? (subtitle ? `${title}, ${subtitle}` : title);
+
   const body = (
     <View style={styles.row}>
       {leading ? <View style={styles.leading}>{leading}</View> : null}
@@ -56,13 +58,19 @@ export function ListRow({
   );
 
   if (!onPress) {
-    return body;
+    // A static row is still ONE focus target with the composed label (UX.md §3),
+    // it just isn't a button.
+    return (
+      <View accessible accessibilityRole="text" accessibilityLabel={composedLabel}>
+        {body}
+      </View>
+    );
   }
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel ?? (subtitle ? `${title}, ${subtitle}` : title)}
+      accessibilityLabel={composedLabel}
       onPress={onPress}
       style={({ pressed }) => [pressed && { backgroundColor: colors.surfaceSunken }]}
     >

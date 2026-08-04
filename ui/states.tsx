@@ -8,13 +8,15 @@
  */
 
 import { Button } from './Button';
+import { useUiStrings } from './uiStrings';
 import { useColors } from '../theme/ThemeProvider';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 export function Skeleton({ height = 72, count = 6 }: { height?: number; count?: number }) {
   const colors = useColors();
+  const strings = useUiStrings();
   return (
-    <View style={styles.pad} accessibilityLabel="Loading" accessibilityRole="progressbar">
+    <View style={styles.pad} accessibilityLabel={strings.loading} accessibilityRole="progressbar">
       {Array.from({ length: count }).map((_, i) => (
         <View
           key={i}
@@ -49,15 +51,14 @@ export function EmptyState({ title, message, action }: EmptyStateProps) {
 
 export function ErrorState({ onRetry }: { onRetry: () => void }) {
   const colors = useColors();
+  const strings = useUiStrings();
   return (
     <View style={styles.center}>
-      <Text style={[styles.title, { color: colors.ink }]}>Something went wrong</Text>
-      <Text style={[styles.body, { color: colors.ink3 }]}>
-        We could not load this. Please try again.
-      </Text>
+      <Text style={[styles.title, { color: colors.ink }]}>{strings.somethingWrong}</Text>
+      <Text style={[styles.body, { color: colors.ink3 }]}>{strings.couldNotLoad}</Text>
       <View style={styles.action}>
         {/* Retry text is the button's accentInk by construction — never invisible (F3). */}
-        <Button label="Try again" variant="primary" onPress={onRetry} />
+        <Button label={strings.retry} variant="primary" onPress={onRetry} />
       </View>
     </View>
   );
@@ -65,12 +66,11 @@ export function ErrorState({ onRetry }: { onRetry: () => void }) {
 
 export function OfflineState() {
   const colors = useColors();
+  const strings = useUiStrings();
   return (
     <View style={styles.center}>
-      <Text style={[styles.title, { color: colors.ink }]}>You are offline</Text>
-      <Text style={[styles.body, { color: colors.ink3 }]}>
-        This will load as soon as you are back online.
-      </Text>
+      <Text style={[styles.title, { color: colors.ink }]}>{strings.offlineTitle}</Text>
+      <Text style={[styles.body, { color: colors.ink3 }]}>{strings.offlineMessage}</Text>
       {/* No retry — reconnecting recovers it. */}
     </View>
   );
@@ -79,11 +79,10 @@ export function OfflineState() {
 /** The bar shown above cached content while offline (the 'stale' state). */
 export function OfflineBar() {
   const colors = useColors();
+  const strings = useUiStrings();
   return (
     <View style={[styles.bar, { backgroundColor: colors.warningBg }]}>
-      <Text style={[styles.barText, { color: colors.warning }]}>
-        Offline — showing saved content
-      </Text>
+      <Text style={[styles.barText, { color: colors.warning }]}>{strings.offlineBar}</Text>
     </View>
   );
 }

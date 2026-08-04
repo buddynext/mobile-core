@@ -6,6 +6,7 @@
  * owns its open state locally. Tapping an action closes the sheet, then runs it.
  */
 
+import { useUiStrings } from './uiStrings';
 import { useColors } from '../theme/ThemeProvider';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,9 +27,10 @@ export interface ActionSheetProps {
   cancelLabel?: string;
 }
 
-export function ActionSheet({ visible, onClose, title, message, actions, cancelLabel = 'Cancel' }: ActionSheetProps) {
+export function ActionSheet({ visible, onClose, title, message, actions, cancelLabel }: ActionSheetProps) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const strings = useUiStrings();
 
   const run = (action: SheetAction) => {
     if (action.disabled) return;
@@ -82,7 +84,7 @@ export function ActionSheet({ visible, onClose, title, message, actions, cancelL
               pressed && { opacity: 0.7 },
             ]}
           >
-            <Text style={[styles.cancelText, { color: colors.ink }]}>{cancelLabel}</Text>
+            <Text style={[styles.cancelText, { color: colors.ink }]}>{cancelLabel ?? strings.cancel}</Text>
           </Pressable>
         </Pressable>
       </Pressable>

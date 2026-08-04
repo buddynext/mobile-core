@@ -40,4 +40,7 @@ export type { FormFieldProps } from './FormField';
 export { OptionCard } from './OptionCard';
 export type { OptionCardProps } from './OptionCard';
 
+export { getUiStrings, setUiStrings, useUiStrings } from './uiStrings';
+export type { UiStrings } from './uiStrings';
+
 export type { ButtonVariant } from './buttonStyle';

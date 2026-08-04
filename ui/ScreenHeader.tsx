@@ -6,6 +6,7 @@
  * a real 44pt target with a label for screen readers.
  */
 
+import { useUiStrings } from './uiStrings';
 import { useColors } from '../theme/ThemeProvider';
 import { ChevronLeft } from 'lucide-react-native';
 import type { ReactNode } from 'react';
@@ -25,12 +26,13 @@ export interface ScreenHeaderProps {
 export function ScreenHeader({ title, onBack, large = false, right }: ScreenHeaderProps) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const strings = useUiStrings();
 
   return (
     <View style={[styles.wrap, { paddingTop: insets.top, backgroundColor: colors.bg, borderBottomColor: large ? 'transparent' : colors.line }]}>
       <View style={styles.row}>
         {onBack ? (
-          <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={onBack} style={styles.back}>
+          <Pressable accessibilityRole="button" accessibilityLabel={strings.back} hitSlop={8} onPress={onBack} style={styles.back}>
             <ChevronLeft size={26} color={colors.ink} />
           </Pressable>
         ) : (
