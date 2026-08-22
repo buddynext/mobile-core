@@ -1,8 +1,7 @@
 {
-  "name": "@wbcom/mobile-core",
-  "private": true,
-  "version": "0.0.0",
-  "description": "The shell: auth, gate, clients, theme, contribution registry. API UNSTABLE until BuddyNext ships (see docs/ARCHITECTURE.md TG8).",
+  "name": "@buddynext/mobile-core",
+  "version": "1.0.0",
+  "description": "The shared React Native shell for every Wbcom app: auth, gate, API clients, theme, contribution registry and UI primitives.",
   "main": "index.ts",
   "types": "index.ts",
   "dependencies": {
@@ -17,10 +16,41 @@
     "react-native": "*"
   },
   "peerDependenciesMeta": {
-    "expo-crypto": { "optional": true },
-    "expo-secure-store": { "optional": true },
-    "expo-web-browser": { "optional": true },
-    "react": { "optional": true },
-    "react-native": { "optional": true }
-  }
+    "expo-crypto": {
+      "optional": true
+    },
+    "expo-secure-store": {
+      "optional": true
+    },
+    "expo-web-browser": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buddynext/mobile-core.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "api",
+    "auth",
+    "cache",
+    "config",
+    "format",
+    "gate",
+    "registry",
+    "session",
+    "theme",
+    "ui",
+    "index.ts",
+    "README.md"
+  ]
 }
