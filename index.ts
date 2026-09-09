@@ -1,11 +1,11 @@
 /**
- * `@wbcom/mobile-core` — the shell.
+ * `@buddynext/mobile-core` — the shell.
  *
  * THIS FILE IS THE ARCHITECTURE'S ONE HARD RULE, made real.
  *
- * ARCHITECTURE.md: "modules import only `@wbcom/mobile-core`. Module -> module imports
+ * ARCHITECTURE.md: "modules import only `@buddynext/mobile-core`. Module -> module imports
  * are forbidden." That rule is only enforceable if there is exactly one door, and this
- * is it. A module reaching for `@wbcom/mobile-core/theme/primitives` is reaching past
+ * is it. A module reaching for `@buddynext/mobile-core/theme/primitives` is reaching past
  * the contract, and the lint rule (TG0.19) treats a deep import as the violation it is.
  *
  * So: everything a module may use is re-exported here, and nothing else is. If a symbol
@@ -42,7 +42,7 @@ export type {
 } from './theme';
 // The React ThemeProvider/useTheme are NOT exported here — they import react-native and
 // would pull it into the node jest barrel. The app imports them from
-// `@wbcom/mobile-core/theme/ThemeProvider` directly (it is the shell, not a module, so
+// `@buddynext/mobile-core/theme/ThemeProvider` directly (it is the shell, not a module, so
 // the no-deep-import rule that binds modules does not apply to it).
 
 // ── Registry ─────────────────────────────────────────────────────────────────────
@@ -90,7 +90,7 @@ export {
 // ── UI decisions (pure) ──────────────────────────────────────────────────────────
 //
 // The logic behind the UI kit. The COMPONENTS live in ./ui and are imported as
-// `@wbcom/mobile-core/ui` (react-native, kept off the node barrel); these are the tested
+// `@buddynext/mobile-core/ui` (react-native, kept off the node barrel); these are the tested
 // decisions they render — the F2 button treatment and the six-state async selection.
 export { resolveButtonTreatment } from './ui/buttonStyle';
 export type { ButtonTreatment, ButtonVariant } from './ui/buttonStyle';
@@ -156,7 +156,7 @@ export {
 //
 // The handshake LOGIC is node-safe and lives here. The RUNTIME (appSession.ts — it opens
 // WebBrowser and touches SecureStore/Crypto) is imported by the app directly from
-// `@wbcom/mobile-core/auth/appSession`, never through this barrel, so the native modules
+// `@buddynext/mobile-core/auth/appSession`, never through this barrel, so the native modules
 // never enter the node test environment.
 export {
   basicAuthHeader,

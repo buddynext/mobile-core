@@ -4,17 +4,17 @@
  * This suite exists because of a defect found auditing TG0: `package.json` declared
  * `"main": "index.ts"` and that file did not exist. Everything passed anyway — every
  * test imported by relative path (`./theme`, `./registry/resolve`), so nothing ever
- * opened the door the whole architecture depends on. `@wbcom/mobile-core` was
+ * opened the door the whole architecture depends on. `@buddynext/mobile-core` was
  * unimportable and the suite was green.
  *
- * ARCHITECTURE.md's one hard rule is "modules import only `@wbcom/mobile-core`". A rule
+ * ARCHITECTURE.md's one hard rule is "modules import only `@buddynext/mobile-core`". A rule
  * whose target does not resolve is not a rule. So these tests import the way a MODULE
  * must import — by package name, never by path — which is the only way the entry point
  * stays honest.
  */
 
-import { buildTheme, resolveContributions, DEFAULT_ACCENT } from '@wbcom/mobile-core';
-import type { Scheme, ServerNavItem, Theme } from '@wbcom/mobile-core';
+import { buildTheme, resolveContributions, DEFAULT_ACCENT } from '@buddynext/mobile-core';
+import type { Scheme, ServerNavItem, Theme } from '@buddynext/mobile-core';
 
 describe('the door opens', () => {
   it('resolves the package by name, not by path', () => {
@@ -60,7 +60,7 @@ describe('the door is the only door', () => {
     // rule forbids; keeping them out of the barrel is what makes that rule enforceable
     // rather than aspirational.
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const surface = require('@wbcom/mobile-core');
+    const surface = require('@buddynext/mobile-core');
 
     for (const forbidden of ['adjustLightness', 'oklchToRgb', 'minContrast', 'rgbToOklch']) {
       expect(surface).not.toHaveProperty(forbidden);
