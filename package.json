@@ -1,6 +1,6 @@
 {
   "name": "@buddynext/mobile-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The shared React Native shell for every Wbcom app: auth, gate, API clients, theme, contribution registry and UI primitives.",
   "main": "index.ts",
   "types": "index.ts",
