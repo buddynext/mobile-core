@@ -1,21 +1,30 @@
 {
   "name": "@buddynext/mobile-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The shared React Native shell for every Wbcom app: auth, gate, API clients, theme, contribution registry and UI primitives.",
   "main": "index.ts",
   "types": "index.ts",
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "axios": "^1.18.1",
     "zustand": "^5.0.14"
   },
   "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
     "expo-crypto": "*",
     "expo-secure-store": "*",
     "expo-web-browser": "*",
+    "lucide-react-native": "*",
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-safe-area-context": "*"
   },
   "peerDependenciesMeta": {
+    "@tanstack/react-query": {
+      "optional": true
+    },
     "expo-crypto": {
       "optional": true
     },
@@ -25,10 +34,16 @@
     "expo-web-browser": {
       "optional": true
     },
+    "lucide-react-native": {
+      "optional": true
+    },
     "react": {
       "optional": true
     },
     "react-native": {
+      "optional": true
+    },
+    "react-native-safe-area-context": {
       "optional": true
     }
   },
@@ -52,5 +67,13 @@
     "ui",
     "index.ts",
     "README.md"
-  ]
+  ],
+  "devDependencies": {
+    "@tanstack/react-query": "^5.101.1",
+    "@types/jest": "^29.5.14",
+    "@types/react": "^18.3.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.3.3"
+  }
 }

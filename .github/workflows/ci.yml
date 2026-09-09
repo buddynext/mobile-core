@@ -1,0 +1,23 @@
+# Without this the 23 suites in this repo only run if someone remembers to.
+# They used to run inside buddynext-app, which carried a copy of this source;
+# that copy is going away, so this is now the only place they execute.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      # Tests only. `tsc --noEmit` over the ui/ layer needs react-native and its
+      # native peers installed here, duplicating what all seven consumer apps
+      # already run against this package on every build.
+      - run: npm test
